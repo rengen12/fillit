@@ -15,21 +15,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include "libft.h"
-
-#ifndef S_TETRIMIN
-# define S_TETRIMIN
-typedef struct	s_tetrimin
-{
-	int	x[4];
-	int	y[4];
-	char c;
-}				t_tetrimin;
-
-#endif
-
-int		ft_evaluate(int n, char **frame);
-void	ft_join(int j, int n, t_tetrimin *tetr_conv);
-t_tetrimin	*convert_tetrs(int qfig, char ***tetr);
+#include "fillit.h"
 
 int		ft_valid(char *buff)
 {
@@ -53,12 +39,11 @@ int		ft_valid(char *buff)
 		if (i > 1)
 			if (buff[i] == '\n' && buff[i - 1] == '\n' && buff[i - 2] == '\n')
 				return (2);
+		if (((i + 1) % 21) == 0 && buff[i] != '\n')
+			return (1);
 	}
-	if (i != 19 && i % 20 != 1 && i % 20 != 0 && (i + 1) % 21 != 0)
-	{
-//		printf("i = %d\n", i);
+	if ((i + 1) % 21 != 0 /*|| buff[i - 1] != '\n'*/)
 		return (7);
-	}
 	return (0);
 }
 
@@ -82,9 +67,11 @@ char	*ft_read(char *file)
 
 	if ((fd = open(file, O_RDONLY)) < 0)
 		return (NULL);
-	if (!(buff = (char*)malloc(10000)))
+	if (!(buff = (char*)malloc(1000)))
 		return (NULL);
-	read(fd, buff, 10000);
+	read(fd, buff, 1000);
+	if (close(fd) == -1)
+		return (NULL);
 	return (buff);
 }
 
@@ -252,27 +239,28 @@ void	print_tetriminos(char ***tetriminos)
 {
 	while (*tetriminos)
 	{
-		puts("NEXT");
-		ft_printstrs(*tetriminos);
-//		printf("Eval = %d\n", ft_evaluate(4, *tetriminos));
+		//puts("NEXT");
+		//ft_print_strtab(*tetriminos);
 		tetriminos++;
 	}
 }
 
 int		print_errors(int i)
 {
+	if (i == 100)
+		ft_putendl("usege: fillit target_file");
 	if (i == 101)
-		ft_putendl("Invalid argc");
+		ft_putendl("error");
 	if (i == 102)
-		ft_putendl("Invalid file");
+		ft_putendl("error");
 	if (i == 103)
-		ft_putendl("Invalid map");
+		ft_putendl("error");
 	if (i == 104)
-		ft_putendl("Cant make tetriminos matrix");
+		ft_putendl("error");
 	if (i < 100)
 	{
-		ft_putstr("Invalid Fig ");
-		ft_putendl(ft_itoa(i));
+		ft_putstr("error");
+		//ft_putendl(ft_itoa(i));
 	}
 	return (0);
 }
@@ -285,15 +273,14 @@ int		main(int ac, char **av)
 	int			count;
 	t_tetrimin	*tetr_converted;
 
+	if (ac == 1)
+		return (print_errors(100));
 	if (ac != 2)
 		return (print_errors(101));
 	if (!(buff = ft_read(av[1])))
 		return (print_errors(102));
 	if (ft_valid(buff) > 0)
-	{
-		printf("%d\n", ft_valid(buff));
 		return (print_errors(103));
-	}
 	count = ft_tetr_num(buff);
 	if (!(tetriminos = ft_gettetr(count, buff, 0, 0)))
 		return (print_errors(104));
@@ -303,4 +290,5 @@ int		main(int ac, char **av)
 	print_tetriminos(tetriminos);
 	tetr_converted = convert_tetrs(count, tetriminos);
 	ft_join(0, count, tetr_converted);
+
 }

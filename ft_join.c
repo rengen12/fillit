@@ -12,18 +12,7 @@
 
 #include "libft.h"
 #include <stdio.h>
-
-#ifndef S_TETRIMIN
-# define S_TETRIMIN
-typedef struct	s_tetrimin
-{
-	int	x[4];
-	int	y[4];
-	char c;
-	int placed;
-}				t_tetrimin;
-
-#endif
+#include "fillit.h"
 
 char	**mkframe(int min, char	**src, int xx, int yy)
 {
@@ -88,28 +77,28 @@ int        ft_evaluate(int n, char **frame)
     y = -1;
     count = 0;
 //	ft_putstr("EVALUATE>>>\n");
-//	ft_printstrs(frame);
+//	ft_print_strtab(frame);
     while(++x < n)
     {
         while (++y < n)
             if (frame[x][y] != '.')
             {
-                if (x < n - 1)
-                    if (frame[x + 1][y] == '.')
-                        count++;
+                 // if (x < n - 1)
+                 //     if (frame[x + 1][y] == '.')
+                 //         count++;
                 if (x > 0)
                     if (frame[x - 1][y] == '.')
                         count++;
-                if (y < n - 1)
-                    if (frame[x][y + 1] == '.')
-                        count++;
+                // if (y < n - 1)
+                //     if (frame[x][y + 1] == '.')
+                //         count++;
                 if (y > 0)
                     if (frame[x][y - 1] == '.')
                         count++;                
             }
         y = -1;
     }
-    printf("EVALUATE = %d\n", count);
+    //printf("EVALUATE = %d\n", count);
     return (count);
 }
 
@@ -127,7 +116,7 @@ char	**ft_copy(int n, char **src)
 	return (frame);
 }
 
-char	**ft_find_place(int n, char **frame, t_tetrimin tetr_conv, int index)
+char	**ft_find_place(int n, char **frame, t_tetrimin tetr_conv)
 {
 	int		x;
 	int		y;
@@ -141,33 +130,41 @@ char	**ft_find_place(int n, char **frame, t_tetrimin tetr_conv, int index)
 	i = 1;
 	best = 9999;
 	optimal = NULL;
-	printf("FIND PLACE... tetr number = %d\n", index);
-	printf("n = %d\n", n);
+	//printf("FIND PLACE... tetr number = %d\n", index);
+	//printf("n = %d\n", n);
 	while(x < n)
 	{
 		while (y < n)
 		{
-			if (frame[x][y] == '.')
+			if (frame[x + tetr_conv.x[0]][y + tetr_conv.y[0]] == '.')
 			{
+				//printf("x in struct = %d, y in strc %d\n", tetr_conv.x[0], tetr_conv.y[0]);
 				if (x + tetr_conv.x[1] < n  && y + tetr_conv.y[1] < n  && \
 					x + tetr_conv.x[2] < n  && y + tetr_conv.y[2] < n  && \
 					x + tetr_conv.x[3] < n  && y + tetr_conv.y[3] < n )
 				{
-					if (frame[x + tetr_conv.x[1]][y + tetr_conv.y[1]] == '.' && \
+					if (frame[x + tetr_conv.x[0]][y + tetr_conv.y[0]] == '.' && \
+						frame[x + tetr_conv.x[1]][y + tetr_conv.y[1]] == '.' && \
 						frame[x + tetr_conv.x[2]][y + tetr_conv.y[2]] == '.' && \
 						frame[x + tetr_conv.x[3]][y + tetr_conv.y[3]] == '.')
 					{
+						/*printf("0x frame = %d, y frame %d\n", x + tetr_conv.x[0], y + tetr_conv.y[0]);
+						printf("1x frame = %d, y frame %d\n", x + tetr_conv.x[1], y + tetr_conv.y[1]);
+						printf("2x frame = %d, y frame %d\n", x + tetr_conv.x[2], y + tetr_conv.y[2]);
+						printf("3x frame = %d, y frame %d\n", x + tetr_conv.x[3], y + tetr_conv.y[3]);
+						printf("char %c\n", frame[x + tetr_conv.x[0]][y + tetr_conv.y[0]]);*/
 						frame[x + tetr_conv.x[0]][y + tetr_conv.y[0]] = tetr_conv.c;
 						frame[x + tetr_conv.x[1]][y + tetr_conv.y[1]] = tetr_conv.c;
 						frame[x + tetr_conv.x[2]][y + tetr_conv.y[2]] = tetr_conv.c;
 						frame[x + tetr_conv.x[3]][y + tetr_conv.y[3]] = tetr_conv.c;
+						//printf("char after %c\n", frame[x + tetr_conv.x[0]][y + tetr_conv.y[0]]);
 						eval = ft_evaluate(n, frame);
 						if (eval < best)
 						{
 							best = eval;
 							optimal = ft_copy(n, frame);
 //							printf("OPTIMAL:\n");
-//							ft_printstrs(optimal);
+//							ft_print_strtab(optimal);
 						}
 						frame[x + tetr_conv.x[0]][y + tetr_conv.y[0]] = '.';
 						frame[x + tetr_conv.x[1]][y + tetr_conv.y[1]] = '.';
@@ -181,17 +178,17 @@ char	**ft_find_place(int n, char **frame, t_tetrimin tetr_conv, int index)
 		y = 0;
 		x++;
 	}
-	ft_putstr("RETURNING OPTIMAL>>>>>>>\n");
-	ft_printstrs(optimal);
-	ft_putstr("FIND PLACE EXIT\n");
+	//ft_putstr("RETURNING OPTIMAL>>>>>>>\n");
+	//ft_print_strtab(optimal);
+	//ft_putstr("FIND PLACE EXIT\n");
 	return (optimal);
 }
 
 char	**ft_frame_back(int n, char **src, char c)
 {
-	puts("FRAME_BACK>>>");
-	printf("Char = %c\n", c);
-	ft_printstrs(src);
+	//puts("FRAME_BACK>>>");
+	//printf("Char = %c\n", c);
+	//ft_print_strtab(src);
 	int	x;
 	int	y;
 
@@ -238,7 +235,7 @@ char	**ft_fillframe(int n, char **frame, t_tetrimin *tetr_conv, int numbfig)
 		{
 			if (tetr_conv[i].placed == 0)
 			{
-				frame = ft_find_place(n, frame, tetr_conv[i], i);
+				frame = ft_find_place(n, frame, tetr_conv[i]);
 				if (!frame)
 				{
 					ft_purify_pl(tetr_conv, numbfig);
@@ -261,9 +258,11 @@ char	**ft_fillframe(int n, char **frame, t_tetrimin *tetr_conv, int numbfig)
 				if (i == numbfig - 1)
 				{
 					puts("PLACING OPTIMAL ELEMENT>>>>>>>>>>>>>>>>");
-					printf("Optimal index = %d\n", opt_index);
-					frame = ft_find_place(n, frame, tetr_conv[opt_index], opt_index);					
+					//printf("Optimal index = %d\n", opt_index);
+
+					frame = ft_find_place(n, frame, tetr_conv[opt_index]);					
 					tetr_conv[opt_index].placed = 1;
+					ft_print_strtab(frame);					
 				}
 			
 			i++;
@@ -297,6 +296,11 @@ t_tetrimin *ft_norm_str(t_tetrimin *t)
 		t->x[i] -= min_x;
 		t->y[i] -= min_y;		
 	}
+	// if (t->y[0] > 0)
+	// 	min_y = t->y[0];
+	// i = -1;
+	// while (++i < 4)
+	// 	t->y[i] -= min_y;		
 	return (t);
 }
 
@@ -357,7 +361,7 @@ char **ft_norm_frame(int side, char **src)
 	y = 0;
 	count = 0;
 	count2 = 0;
-	puts("NORM_FRAME!>>>>>>");
+	//puts("NORM_FRAME!>>>>>>");
 	while (x < side)
 	{
 		if (src[x][0] == '.')
@@ -372,7 +376,7 @@ char **ft_norm_frame(int side, char **src)
 		x = 1;
 	else
 		x = 0;
-	printf("x = %d; y = %d\n", x, y);
+	//printf("x = %d; y = %d\n", x, y);
 	src = mkframe(side, src, x, y);
 	return (src);
 }
@@ -385,23 +389,23 @@ void	ft_join(int j, int n, t_tetrimin *tetr_conv)
 
 	i = -1;
 	side = j + find_min(n);
-	ft_putstr("FT_JOIN....\n");
+	//ft_putstr("FT_JOIN....\n");
 	if (!(frame = mkframe(side, NULL, 0, 0)))
 		return ;
 	if (!(frame = ft_fillframe(side, frame, tetr_conv, n)))
 	{
-		//ft_delmem(frame);
+		ft_strdel(frame);
 		ft_putstr("EXPANDING SQUARE>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>\n");
 		ft_join(j + 1, n, tetr_conv);
 	}
 
 	else
 	{
-		frame = ft_norm_frame(side, frame);
-		frame = ft_norm_frame(side, frame);	
-		ft_putstr("FINAL PRINT\n");
-		printf("%p\n", frame);
-		ft_printstrs(frame);
+		//frame = ft_norm_frame(side, frame);
+		//frame = ft_norm_frame(side, frame);	
+		//ft_putstr("\nFINAL PRINT>>>>>>>>>>>>>>>>>\n\n");
+		//printf("%p\n", frame);
+		ft_print_strtab(frame);
 	}
 }
 
