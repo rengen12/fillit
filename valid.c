@@ -253,7 +253,7 @@ void	print_tetriminos(char ***tetriminos)
 	while (*tetriminos)
 	{
 		puts("NEXT");
-		ft_print_strtab(*tetriminos);
+		ft_printstrs(*tetriminos);
 //		printf("Eval = %d\n", ft_evaluate(4, *tetriminos));
 		tetriminos++;
 	}
