@@ -257,12 +257,12 @@ char	**ft_fillframe(int n, char **frame, t_tetrimin *tetr_conv, int numbfig)
 			}
 				if (i == numbfig - 1)
 				{
-					puts("PLACING OPTIMAL ELEMENT>>>>>>>>>>>>>>>>");
+					//puts("PLACING OPTIMAL ELEMENT>>>>>>>>>>>>>>>>");
 					//printf("Optimal index = %d\n", opt_index);
 
 					frame = ft_find_place(n, frame, tetr_conv[opt_index]);					
 					tetr_conv[opt_index].placed = 1;
-					ft_print_strtab(frame);					
+					//ft_print_strtab(frame);
 				}
 			
 			i++;

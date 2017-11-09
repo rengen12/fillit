@@ -11,9 +11,7 @@
 /* ************************************************************************** */
 
 #include <fcntl.h>
-#include <unistd.h>
 #include <stdio.h>
-#include <stdlib.h>
 #include "libft.h"
 #include "fillit.h"
 
@@ -64,12 +62,14 @@ char	*ft_read(char *file)
 {
 	int		fd;
 	char	*buff;
+    int     ret;
 
 	if ((fd = open(file, O_RDONLY)) < 0)
 		return (NULL);
 	if (!(buff = (char*)malloc(1000)))
 		return (NULL);
-	read(fd, buff, 1000);
+	ret = read(fd, buff, 1000);
+    buff[ret] = '\0';
 	if (close(fd) == -1)
 		return (NULL);
 	return (buff);
