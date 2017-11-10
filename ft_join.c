@@ -167,13 +167,9 @@ char	**ft_add(int side, char **frame, t_tetrimin *t)
 	{
 		y = -1;
 		while (++y < side)
-		{
 			if (t->x[i] == x && t->y[i] == y)
-			{
-				frame[x][y] = t->c;
-				i++;
-			}
-		}
+				if (i++ > -1)
+					frame[x][y] = t->c;
 		frame[x][y] = '\0';
 	}
 	frame[x] = NULL;

@@ -306,9 +306,9 @@ int		main(int ac, char **av)
 	count = ft_tetr_num(buff);
 	if (!(tetriminos = ft_gettetr(count, buff, 0, 0)))
 		return (print_errors(101));
-	if (ft_valid_fig(tetriminos) > 0);
+	if (ft_valid_fig(tetriminos) > 0)
 		return (print_errors(101));
-	print_tetriminos(tetriminos);
+//	print_tetriminos(tetriminos);
 	t = convert_tetrs(tetriminos);
 //	print_t(t);
 	ft_join(find_min(count), t);
