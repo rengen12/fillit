@@ -10,28 +10,9 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <fcntl.h>
-#include <stdio.h>
-#include "libft.h"
 #include "fillit.h"
 
-int		find_min(int n)
-{
-	int sqr;
-	int out;
-
-	out = 0;
-	sqr = n * 4;
-	while (out <= sqr)
-	{
-		if (out * out >= sqr)
-			return (out);
-		out++;
-	}
-	return (0);
-}
-
-int		ft_valid(char *buff)
+int			ft_valid(char *buff)
 {
 	int i;
 	int count;
@@ -56,12 +37,10 @@ int		ft_valid(char *buff)
 		if (((i + 1) % 21) == 0 && buff[i] != '\n')
 			return (1);
 	}
-	if ((i + 1) % 21 != 0 || (i + 1) > 546)
-		return (7);
-	return (0);
+	return (((i + 1) % 21 != 0 || (i + 1) > 546) ? 7 : 0);
 }
 
-int		ft_tetr_num(char *buff)
+int			ft_tetr_num(char *buff)
 {
 	int i;
 	int count;
@@ -74,24 +53,26 @@ int		ft_tetr_num(char *buff)
 	return ((count + 1) / 5);
 }
 
-char	*ft_read(char *file)
+static int	ft_cont(int i, int j, char **sp)
 {
-	int		fd;
-	char	*buff;
-    int     ret;
+	int cont;
 
-	if ((fd = open(file, O_RDONLY)) < 0)
-		return (NULL);
-	if (!(buff = (char*)malloc(1000)))
-		return (NULL);
-	ret = read(fd, buff, 1000);
-    buff[ret] = '\0';
-	if (close(fd) == -1)
-		return (NULL);
-	return (buff);
+	cont = 0;
+	if (i > 0)
+		if (sp[i - 1][j] == '#')
+			cont++;
+	if (j > 0)
+		if (sp[i][j - 1] == '#')
+			cont++;
+	if (i < 3)
+		if (sp[i + 1][j] == '#')
+			cont++;
+	if (sp[i][j + 1] == '#')
+		cont++;
+	return (cont);
 }
 
-int		ft_test_figchars(char **sp)
+int			ft_test_figchars(char **sp)
 {
 	int i;
 	int j;
@@ -107,82 +88,25 @@ int		ft_test_figchars(char **sp)
 		while (++j < 4)
 			if (sp[i][j] == '#')
 			{
-				if (i > 0)
-					if(sp[i - 1][j] == '#')
-						cont++;
-				if (j > 0)
-					if(sp[i][j - 1] == '#')
-						cont++;
-				if (i < 3)
-					if(sp[i + 1][j] == '#')
-						cont++;
-				if (j < 3)
-					if(sp[i][j + 1] == '#')
-						cont++;				
+				cont += ft_cont(i, j, sp);
 				count++;
 			}
 	}
-	if (count != 4 || cont < 6)
-		return (1);
-	return (0);
+	return ((count != 4 || cont < 6) ? 1 : 0);
 }
 
-int		sp_test(char **sp)
+int			find_min(int n)
 {
-	if (!*sp)
-		return (0);
-	if (ft_test_figchars(sp) > 0)
-		return (1);
-	return (sp_test(sp + 4));
-}
+	int sqr;
+	int out;
 
-int		print_errors(int i)
-{
-	if (i == 100)
-		ft_putendl("usage: fillit target_file");
-	if (i == 101)
-		ft_putendl("error");
-	return (0);
-}
-
-void	print_t(t_tetrimin *t)
-{
-	t_tetrimin *temp;
-	int i;
-	int j;
-
-	i = -1;
-	j = 0;
-	temp = t;
-	while (temp)
+	out = 0;
+	sqr = n * 4;
+	while (out <= sqr)
 	{
-		puts("Next");
-		while (++i < 4)
-			printf("j = %d; t.x[i] = %d; t.y[i] = %d; Char = %c\n", j, temp->x[i], temp->y[i], temp->c);
-		i = -1;
-		j++;
-		temp = temp->next;
+		if (out * out >= sqr)
+			return (out);
+		out++;
 	}
-}
-
-int		main(int ac, char **av)
-{
-	char		*buff;
-	int			count;
-	t_tetrimin	*t;
-
-	if (ac == 1)
-		return (print_errors(100));
-	if (ac != 2)
-		return (print_errors(101));
-	if (!(buff = ft_read(av[1])))
-		return (print_errors(101));
-	if (ft_valid(buff) > 0)
-		return (print_errors(101));
-	count = ft_tetr_num(buff);
-	if (!(t = convert_tetrs(buff)))
-		return (print_errors(101));
-//	print_t(t);
-	ft_join(find_min(count), t);
 	return (0);
 }
