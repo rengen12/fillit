@@ -54,7 +54,7 @@ char	**ft_frame_back(int side, char **src, char c)
 	return(src);
 }
 
-void	ft_convert(t_tetrimin *t, char **m)
+t_tetrimin	*ft_mklst(t_tetrimin *t, char **sp, char c)
 {
 	int x;
 	int y;
@@ -63,11 +63,13 @@ void	ft_convert(t_tetrimin *t, char **m)
 	x = -1;
 	y = -1;
 	i = 0;
+	if (!*sp || !(t->next = (t_tetrimin*)malloc(sizeof(t_tetrimin))))
+		return (NULL);
 	while (++x < 4)
 	{
 		while (++y < 4)
 		{
-			if (m[x][y] == '#')
+			if (sp[x][y] == '#')
 			{
 				t->x[i] = x;
 				t->y[i] = y;
@@ -76,33 +78,30 @@ void	ft_convert(t_tetrimin *t, char **m)
 		}
 		y = -1;
 	}
+	t->c = c++;
+	t->next = ft_mklst(t->next, sp + 4, c);
+	return (t);
 }
 
-t_tetrimin	*convert_tetrs(char ***tetr)
+t_tetrimin	*convert_tetrs(char *buff)
 {
-	t_tetrimin	*t;
-	t_tetrimin	*temp;
-	char		c;
+	char **sp;
+	t_tetrimin *t;
 
-	c = 'A';
-
+	sp = ft_strsplit(buff, '\n');
+	if (sp_test(sp) > 0)
+		return (NULL);
+	ft_strdel(&buff);
 	if (!(t = (t_tetrimin*)malloc(sizeof(t_tetrimin))))
 		return (NULL);
-	temp = t;
-	ft_convert(t, *tetr);
-	tetr++;
-	t->c = c++;
-	while (*tetr)
-	{
-		if (!(t->next = (t_tetrimin*)malloc(sizeof(t_tetrimin))))
-			return (NULL);
-		t = t->next;
-		t->c = c++;
-		ft_convert(t, *tetr++);			
-	}
-	t->next = NULL;
+	t = ft_mklst(t, sp, 'A');
+	if (t == NULL)
+		puts("TT = NULL>>>");
+	while (*sp)
+		ft_strdel(sp++);
+	sp = NULL;
+	return (t);
 
-	return (temp);
 }
 
 t_tetrimin 	*ft_new_xy(t_tetrimin *t, int x, int y)

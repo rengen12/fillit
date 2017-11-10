@@ -91,170 +91,50 @@ char	*ft_read(char *file)
 	return (buff);
 }
 
-char	***ft_fulltetr(char ***out, int x, int y, char **split)
-{
-	int sp;
-
-	sp = 0;
-	while (split[sp])
-	{
-		while (y < 4)
-			out[x][y++] = split[sp++];
-		out[x++][y] = NULL;
-		y = 0;
-	}
-	return (out);
-}
-
-char	***ft_gettetr(int i, char *buff, int n, int nn)
-{
-	char	***out;
-
-	if (!(out = (char***)malloc(sizeof(char**) * (i + 1))))
-		return (NULL);
-	while (n++ < i)
-	{
-		if (!(out[n - 1] = (char**)malloc(sizeof(char*) * 5)))
-			return (NULL);
-		while (nn < 4)
-			if (!(out[n - 1][nn++] = (char*)malloc(9)))
-				return (NULL);
-	}
-	out[n - 1] = NULL;
-	out = ft_fulltetr(out, 0, 0, ft_strsplit(buff, '\n'));
-	return (out);
-}
-
-int		ft_test_tab(int **tab, int x, int y)
-{
-	int i;
-
-	i = 0;
-	while (i < 10)
-	{
-		if (tab[0][i] == x && tab[1][i] == y)
-			return (1);
-		i++;
-	}
-	return (0);
-}
-
-int		ft_rec(char **m, int x, int y, int **tab)
-{
-	int out;
-
-	out = 0;
-	if (x > 3 || y > 3 || y < 0)
-		return (0);
-	if (ft_test_tab(tab, x, y) == 1)
-		return (0);
-	if (m[x][y] != '#')
-		return (0);
-	else
-	{
-		tab[0][tab[2][0]] = x;
-		tab[1][tab[2][0]] = y;
-		tab[2][0]++;
-		out++;
-		out = out + ft_rec(m, x + 1, y, tab);
-		out = out + ft_rec(m, x, y + 1, tab);
-		out = out + ft_rec(m, x, y - 1, tab);
-		return (out);
-	}
-}
-
-int		ft_test_matrix(char **m, int x, int y, int **tab)
-{
-	if (x > 3 || y > 3 || y < 0)
-		return (0);
-	if (ft_test_tab(tab, x, y) == 1)
-		return (0);
-	while (x < 4)
-	{
-		while (y < 4)
-		{
-			if (m[x][y] == '#')
-				return (ft_rec(m, x, y, tab));
-			y++;
-		}
-		y = 0;
-		x++;
-	}
-	return (0);
-}
-
-void	ft_settab(int **tab)
-{
-	int i;
-
-	i = 0;
-	while (i < 10)
-	{
-		tab[0][i] = -1;
-		tab[1][i] = -1;
-		i++;
-	}
-	tab[2][0] = 0;
-}
-
-int		ft_test_figchars(char **m)
+int		ft_test_figchars(char **sp)
 {
 	int i;
 	int j;
 	int count;
+	int cont;
 
 	i = -1;
 	count = 0;
+	cont = 0;
 	while (++i < 4)
 	{
 		j = -1;
 		while (++j < 4)
-			if (m[i][j] == '#')
+			if (sp[i][j] == '#')
+			{
+				if (i > 0)
+					if(sp[i - 1][j] == '#')
+						cont++;
+				if (j > 0)
+					if(sp[i][j - 1] == '#')
+						cont++;
+				if (i < 3)
+					if(sp[i + 1][j] == '#')
+						cont++;
+				if (j < 3)
+					if(sp[i][j + 1] == '#')
+						cont++;				
 				count++;
+			}
 	}
-	if (count != 4)
+	if (count != 4 || cont < 6)
 		return (1);
 	return (0);
 }
 
-int		ft_valid_fig(char ***t)
+int		sp_test(char **sp)
 {
-	int **tab;
-	int i;
-
-	i = -1;
-	tab = (int**)malloc(sizeof(int*) * 3);
-	tab[0] = (int*)malloc(sizeof(int) * 17);
-	tab[1] = (int*)malloc(sizeof(int) * 17);
-	tab[2] = (int*)malloc(sizeof(int) * 1);
-	tab[2][0] = 0;
-	while (++i < 10)
-	{
-		tab[0][i] = -1;
-		tab[1][i] = -1;
-	}
-	i = 0;
-	while (*t)
-	{
-		i++;
-		if (ft_test_figchars(*t) > 0)
-			return (i);
-		if (ft_test_matrix(*t++, 0, 0, tab) != 4)
-			return (i);
-		ft_settab(tab);
-	}
-	return (0);
+	if (!*sp)
+		return (0);
+	if (ft_test_figchars(sp) > 0)
+		return (1);
+	return (sp_test(sp + 4));
 }
-
-// void	print_tetriminos(char ***tetriminos)
-// {
-// 	while (*tetriminos)
-// 	{
-// 		//puts("NEXT");
-// 		//ft_print_strtab(*tetriminos);
-// 		tetriminos++;
-// 	}
-// }
 
 int		print_errors(int i)
 {
@@ -265,32 +145,28 @@ int		print_errors(int i)
 	return (0);
 }
 
-// void	print_t(t_tetrimin *t)
-// {
-// 	t_tetrimin *temp;
-// 	int i;
-// 	int j;
+void	print_t(t_tetrimin *t)
+{
+	t_tetrimin *temp;
+	int i;
+	int j;
 
-// 	i = -1;
-// 	j = 0;
-// 	temp = t;
-// 	puts("PRINT_T");
-// 	while (temp)
-// 	{
-// 		puts("While");
-// 		while (++i < 4)
-// 		{
-// 			printf("j = %d; t.x[i] = %d; t.y[i] = %d; Char = %c\n", j, temp->x[i], temp->y[i], temp->c);
-// 		}
-// 		i = -1;
-// 		j++;
-// 		temp = temp->next;
-// 	}
-// }
+	i = -1;
+	j = 0;
+	temp = t;
+	while (temp)
+	{
+		puts("Next");
+		while (++i < 4)
+			printf("j = %d; t.x[i] = %d; t.y[i] = %d; Char = %c\n", j, temp->x[i], temp->y[i], temp->c);
+		i = -1;
+		j++;
+		temp = temp->next;
+	}
+}
 
 int		main(int ac, char **av)
 {
-	char		***tetriminos;
 	char		*buff;
 	int			count;
 	t_tetrimin	*t;
@@ -304,12 +180,8 @@ int		main(int ac, char **av)
 	if (ft_valid(buff) > 0)
 		return (print_errors(101));
 	count = ft_tetr_num(buff);
-	if (!(tetriminos = ft_gettetr(count, buff, 0, 0)))
+	if (!(t = convert_tetrs(buff)))
 		return (print_errors(101));
-	if (ft_valid_fig(tetriminos) > 0)
-		return (print_errors(101));
-//	print_tetriminos(tetriminos);
-	t = convert_tetrs(tetriminos);
 //	print_t(t);
 	ft_join(find_min(count), t);
 	return (0);
