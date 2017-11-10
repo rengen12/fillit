@@ -15,6 +15,22 @@
 #include "libft.h"
 #include "fillit.h"
 
+int		find_min(int n)
+{
+	int sqr;
+	int out;
+
+	out = 0;
+	sqr = n * 4;
+	while (out <= sqr)
+	{
+		if (out * out >= sqr)
+			return (out);
+		out++;
+	}
+	return (0);
+}
+
 int		ft_valid(char *buff)
 {
 	int i;
@@ -40,7 +56,7 @@ int		ft_valid(char *buff)
 		if (((i + 1) % 21) == 0 && buff[i] != '\n')
 			return (1);
 	}
-	if ((i + 1) % 21 != 0 /*|| buff[i - 1] != '\n'*/)
+	if ((i + 1) % 21 != 0 || (i + 1) > 546)
 		return (7);
 	return (0);
 }
@@ -55,7 +71,7 @@ int		ft_tetr_num(char *buff)
 	while (buff[++i] != '\0')
 		if (buff[i] == '\n')
 			count++;
-	return (count == 3 ? 1 : (count / 5) + 1);
+	return ((count + 1) / 5);
 }
 
 char	*ft_read(char *file)
@@ -75,17 +91,17 @@ char	*ft_read(char *file)
 	return (buff);
 }
 
-char	***ft_fulltetr(char ***out, int n, int nn, char **split)
+char	***ft_fulltetr(char ***out, int x, int y, char **split)
 {
 	int sp;
 
 	sp = 0;
 	while (split[sp])
 	{
-		while (nn < 4)
-			out[n][nn++] = split[sp++];
-		out[n++][nn] = NULL;
-		nn = 0;
+		while (y < 4)
+			out[x][y++] = split[sp++];
+		out[x++][y] = NULL;
+		y = 0;
 	}
 	return (out);
 }
@@ -187,19 +203,14 @@ int		ft_test_figchars(char **m)
 	int j;
 	int count;
 
-	i = 0;
-	j = 0;
+	i = -1;
 	count = 0;
-	while (i < 4)
+	while (++i < 4)
 	{
-		while (j < 4)
-		{
+		j = -1;
+		while (++j < 4)
 			if (m[i][j] == '#')
 				count++;
-			j++;
-		}
-		j = 0;
-		i++;
 	}
 	if (count != 4)
 		return (1);
@@ -235,60 +246,71 @@ int		ft_valid_fig(char ***t)
 	return (0);
 }
 
-void	print_tetriminos(char ***tetriminos)
-{
-	while (*tetriminos)
-	{
-		//puts("NEXT");
-		//ft_print_strtab(*tetriminos);
-		tetriminos++;
-	}
-}
+// void	print_tetriminos(char ***tetriminos)
+// {
+// 	while (*tetriminos)
+// 	{
+// 		//puts("NEXT");
+// 		//ft_print_strtab(*tetriminos);
+// 		tetriminos++;
+// 	}
+// }
 
 int		print_errors(int i)
 {
 	if (i == 100)
-		ft_putendl("usege: fillit target_file");
+		ft_putendl("usage: fillit target_file");
 	if (i == 101)
 		ft_putendl("error");
-	if (i == 102)
-		ft_putendl("error");
-	if (i == 103)
-		ft_putendl("error");
-	if (i == 104)
-		ft_putendl("error");
-	if (i < 100)
-	{
-		ft_putstr("error");
-		//ft_putendl(ft_itoa(i));
-	}
 	return (0);
 }
+
+// void	print_t(t_tetrimin *t)
+// {
+// 	t_tetrimin *temp;
+// 	int i;
+// 	int j;
+
+// 	i = -1;
+// 	j = 0;
+// 	temp = t;
+// 	puts("PRINT_T");
+// 	while (temp)
+// 	{
+// 		puts("While");
+// 		while (++i < 4)
+// 		{
+// 			printf("j = %d; t.x[i] = %d; t.y[i] = %d; Char = %c\n", j, temp->x[i], temp->y[i], temp->c);
+// 		}
+// 		i = -1;
+// 		j++;
+// 		temp = temp->next;
+// 	}
+// }
 
 int		main(int ac, char **av)
 {
 	char		***tetriminos;
 	char		*buff;
-	int			err;
 	int			count;
-	t_tetrimin	*tetr_converted;
+	t_tetrimin	*t;
 
 	if (ac == 1)
 		return (print_errors(100));
 	if (ac != 2)
 		return (print_errors(101));
 	if (!(buff = ft_read(av[1])))
-		return (print_errors(102));
+		return (print_errors(101));
 	if (ft_valid(buff) > 0)
-		return (print_errors(103));
+		return (print_errors(101));
 	count = ft_tetr_num(buff);
 	if (!(tetriminos = ft_gettetr(count, buff, 0, 0)))
-		return (print_errors(104));
-	err = ft_valid_fig(tetriminos);
-	if (err > 0)
-		return (print_errors(err));
+		return (print_errors(101));
+	if (ft_valid_fig(tetriminos) > 0);
+		return (print_errors(101));
 	print_tetriminos(tetriminos);
-	tetr_converted = convert_tetrs(count, tetriminos);
-	ft_join(0, count, tetr_converted);
-
+	t = convert_tetrs(tetriminos);
+//	print_t(t);
+	ft_join(find_min(count), t);
+	return (0);
 }
