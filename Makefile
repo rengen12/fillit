@@ -1,4 +1,4 @@
-CC = gcc --enable-libstdcxx-debug
+CC = gcc
 
 TARGET = fillit
 
