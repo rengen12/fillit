@@ -1,3 +1,17 @@
+# **************************************************************************** #
+#                                                                              #
+#                                                         :::      ::::::::    #
+#    Makefile                                           :+:      :+:    :+:    #
+#                                                     +:+ +:+         +:+      #
+#    By: amichak <marvin@42.fr>                     +#+  +:+       +#+         #
+#                                                 +#+#+#+#+#+   +#+            #
+#    Created: 2017/11/11 12:49:49 by amichak           #+#    #+#              #
+#    Updated: 2017/11/11 12:51:58 by amichak          ###   ########.fr        #
+#                                                                              #
+# **************************************************************************** #
+
+.PHONY:			all clean fclean re $(TARGET)
+
 CC = gcc
 
 TARGET = fillit
@@ -29,7 +43,6 @@ $(OBJFOLD)%.o: %.c
 
 clean:
 	@rm -rf $(OBJFOLD)
-	@make -C $(LIBDIR) -f Makefile clean
 	@echo "Fillit: objects removed"
 
 fclean: clean
@@ -38,5 +51,3 @@ fclean: clean
 	@echo "Fillit: binary removed"
 
 re:				fclean all
-
-.PHONY:			all clean fclean re $(TARGET)

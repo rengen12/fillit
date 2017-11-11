@@ -3,10 +3,10 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: rengen <rengen@student.42.fr>              +#+  +:+       +#+         #
+#    By: amichak <marvin@42.fr>                     +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
-#    Created: 2017/10/30 12:19:38 by amichak           #+#    #+#              #
-#    Updated: 2017/11/11 02:42:33 by rengen           ###   ########.fr        #
+#    Created: 2017/11/11 13:15:45 by amichak           #+#    #+#              #
+#    Updated: 2017/11/11 13:15:48 by amichak          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -38,7 +38,7 @@ all:				$(TARGET)
 $(TARGET):			$(OBJ)
 	@ar rc $(TARGET) $(OBJ)
 	@ranlib $(TARGET)
-	@echo "Libft: done!"
+	@echo "Libft: done"
 	
 $(OBJFOLD)%.o: %.c
 	@mkdir -p $(OBJFOLD)
