@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   frame.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dbuy <marvin@42.fr>                        +#+  +:+       +#+        */
+/*   By: rengen <rengen@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/10 18:55:35 by dbuy              #+#    #+#             */
-/*   Updated: 2017/11/10 18:55:36 by dbuy             ###   ########.fr       */
+/*   Updated: 2017/11/11 04:12:49 by rengen           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,33 +41,41 @@ t_tetrimin	*ft_mklst(t_tetrimin *t, char **sp, char c)
 	return (t);
 }
 
+void		ft_print_tab(char **tab)
+{
+	if (!tab)
+		return ;
+	while (*tab)
+		ft_putendl(*tab++);
+}
+
 t_tetrimin	*convert_tetrs(char *buff)
 {
 	char		**sp;
 	t_tetrimin	*t;
 
-	sp = ft_strsplit(buff, '\n');
+	if (!(sp = ft_strsplit(buff, '\n')))
+		return (NULL);
 	if (sp_test(sp) > 0)
+	{
+		ft_tabdel(sp);
 		return (NULL);
-	ft_strdel(&buff);
+	}
 	if (!(t = (t_tetrimin*)malloc(sizeof(t_tetrimin))))
+	{
+		ft_tabdel(sp);
 		return (NULL);
+	}
 	t = ft_mklst(t, sp, 'A');
-	while (*sp)
-		ft_strdel(sp++);
-	sp = NULL;
-	return (t);
+	ft_tabdel(sp);
+	return (!t ? NULL : t);
 }
 
 char		**mkframe(int min)
 {
 	char	**frame;
 	int		i;
-	int		x;
-	int		y;
 
-	x = 0;
-	y = 0;
 	i = -1;
 	if (!(frame = (char**)malloc(sizeof(char*) * (min + 1))))
 		return (NULL);

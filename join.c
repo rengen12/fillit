@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   join.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dbuy <marvin@42.fr>                        +#+  +:+       +#+        */
+/*   By: rengen <rengen@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/07 14:09:13 by dbuy              #+#    #+#             */
-/*   Updated: 2017/11/07 14:09:21 by dbuy             ###   ########.fr       */
+/*   Updated: 2017/11/11 04:29:26 by rengen           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -89,9 +89,9 @@ static char			**ft_fill(int side, char **frame, t_tetrimin *t)
 	int		x;
 	int		y;
 
-	tmp = NULL;
 	if (t == NULL)
 		return (frame);
+	tmp = NULL;
 	x = -1;
 	while (++x < side)
 	{
@@ -113,9 +113,11 @@ void				ft_join(int side, t_tetrimin *t)
 {
 	char	**frame;
 
-	frame = mkframe(side);
+	if (!(frame = mkframe(side)))
+		return ;
 	frame = ft_fill(side, frame, t);
 	if (frame == NULL)
 		ft_join(++side, t);
-	ft_print_strtab(frame);
+	ft_print_tab(frame);
+	ft_tabdel(frame);
 }

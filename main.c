@@ -3,23 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dbuy <marvin@42.fr>                        +#+  +:+       +#+        */
+/*   By: rengen <rengen@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/10 18:45:36 by dbuy              #+#    #+#             */
-/*   Updated: 2017/11/10 18:45:39 by dbuy             ###   ########.fr       */
+/*   Updated: 2017/11/11 04:28:52 by rengen           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "fillit.h"
-
-int			sp_test(char **sp)
-{
-	if (!*sp)
-		return (0);
-	if (ft_test_figchars(sp) > 0)
-		return (1);
-	return (sp_test(sp + 4));
-}
 
 static char	*ft_read(char *file)
 {
@@ -38,6 +29,29 @@ static char	*ft_read(char *file)
 	return (buff);
 }
 
+static int	find_min(char *buff)
+{
+	int i;
+	int count;
+	int sqr;
+	int out;
+
+	count = 0;
+	i = -1;
+	out = 2;
+	while (buff[++i] != '\0')
+		if (buff[i] == '\n')
+			count++;
+	sqr = 4 * ((count + 1) / 5);
+	while (out <= sqr)
+	{
+		if (out * out >= sqr)
+			return (out);
+		out++;
+	}
+	return (0);
+}
+
 static int	print_errors(int i)
 {
 	if (i == 100)
@@ -47,10 +61,18 @@ static int	print_errors(int i)
 	return (0);
 }
 
+void		ft_tabdel(char **tab)
+{
+	if (!tab)
+		return ;
+	while (*tab)
+		ft_strdel(tab++);
+	tab = NULL;
+}
+
 int			main(int ac, char **av)
 {
 	char		*buff;
-	int			count;
 	t_tetrimin	*t;
 
 	if (ac == 1)
@@ -60,10 +82,17 @@ int			main(int ac, char **av)
 	if (!(buff = ft_read(av[1])))
 		return (print_errors(101));
 	if (ft_valid(buff) > 0)
+	{
+		ft_strdel(&buff);
 		return (print_errors(101));
-	count = ft_tetr_num(buff);
+	}
 	if (!(t = convert_tetrs(buff)))
+	{
+		ft_strdel(&buff);
 		return (print_errors(101));
-	ft_join(find_min(count), t);
+	}
+	ft_join(find_min(buff), t);
+	ft_strdel(&buff);
+	ft_tetrdel(&t);
 	return (0);
 }

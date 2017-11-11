@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   valid.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dbuy <marvin@42.fr>                        +#+  +:+       +#+        */
+/*   By: rengen <rengen@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/04 13:01:22 by dbuy              #+#    #+#             */
-/*   Updated: 2017/11/04 13:01:23 by dbuy             ###   ########.fr       */
+/*   Updated: 2017/11/11 04:22:05 by rengen           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,19 +40,6 @@ int			ft_valid(char *buff)
 	return (((i + 1) % 21 != 0 || (i + 1) > 546) ? 7 : 0);
 }
 
-int			ft_tetr_num(char *buff)
-{
-	int i;
-	int count;
-
-	count = 0;
-	i = -1;
-	while (buff[++i] != '\0')
-		if (buff[i] == '\n')
-			count++;
-	return ((count + 1) / 5);
-}
-
 static int	ft_cont(int i, int j, char **sp)
 {
 	int cont;
@@ -72,7 +59,7 @@ static int	ft_cont(int i, int j, char **sp)
 	return (cont);
 }
 
-int			ft_test_figchars(char **sp)
+static int	ft_test_figchars(char **sp)
 {
 	int i;
 	int j;
@@ -95,18 +82,30 @@ int			ft_test_figchars(char **sp)
 	return ((count != 4 || cont < 6) ? 1 : 0);
 }
 
-int			find_min(int n)
+int			sp_test(char **sp)
 {
-	int sqr;
-	int out;
+	if (!*sp)
+		return (0);
+	if (ft_test_figchars(sp) > 0)
+		return (1);
+	return (sp_test(sp + 4));
+}
 
-	out = 0;
-	sqr = n * 4;
-	while (out <= sqr)
+void		ft_tetrdel(t_tetrimin **t)
+{
+	t_tetrimin *tmp;
+
+	if (!t)
+		return ;
+	while (*t)
 	{
-		if (out * out >= sqr)
-			return (out);
-		out++;
+		if ((*t)->next)
+		{
+			tmp = (*t)->next;
+		}
+		else
+			tmp = NULL;
+		free(*t);
+		*t = tmp;
 	}
-	return (0);
 }
