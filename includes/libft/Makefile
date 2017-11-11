@@ -6,7 +6,7 @@
 #    By: amichak <marvin@42.fr>                     +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2017/11/11 13:15:45 by amichak           #+#    #+#              #
-#    Updated: 2017/11/11 13:15:48 by amichak          ###   ########.fr        #
+#    Updated: 2017/11/11 13:23:54 by amichak          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -46,11 +46,9 @@ $(OBJFOLD)%.o: %.c
 
 clean:
 	@rm -rf $(OBJFOLD)
-	@echo "Libft: objects removed"
 
 fclean:				clean
 	@rm -f $(TARGET)
-	@echo "Libft: binary removed"
 
 re:					fclean all
 

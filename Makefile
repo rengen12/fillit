@@ -6,7 +6,7 @@
 #    By: amichak <marvin@42.fr>                     +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2017/11/11 12:49:49 by amichak           #+#    #+#              #
-#    Updated: 2017/11/11 12:51:58 by amichak          ###   ########.fr        #
+#    Updated: 2017/11/11 13:24:41 by amichak          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -43,11 +43,12 @@ $(OBJFOLD)%.o: %.c
 
 clean:
 	@rm -rf $(OBJFOLD)
-	@echo "Fillit: objects removed"
+	@make -C $(LIBDIR) -f Makefile clean
+	@echo "objects removed"
 
 fclean: clean
 	@rm -f $(TARGET)
 	@make -C $(LIBDIR) -f Makefile fclean
-	@echo "Fillit: binary removed"
+	@echo "binary removed"
 
 re:				fclean all
